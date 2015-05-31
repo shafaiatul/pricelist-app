@@ -1,15 +1,17 @@
 var myApp = angular.module('myApp', []);
 myApp.controller('AppCtrl', ['$scope', '$http', function ($scope, $http) {
-	
+
+
+
 	var refresh = function () {
 		$http.get('/pricelist').success(function (response) {
 			console.log('I got the data I requested');
 			$scope.pricelist = response; // 'response' is what I received from the data. This line of code will put the data in index.html
-			$scope.product = ''; //this will clear out the input boxes after I call the refresh() function. 
+			$scope.product = ''; //this will clear out the input boxes after I call the refresh() function.
 		});
 	};
 
-	refresh(); //call the function so that it will get the data right when I load the page. Lets call the refresh() function end of 
+	refresh(); //call the function so that it will get the data right when I load the page. Lets call the refresh() function end of
 	//"addProduct" function to imediately refresh the page after clicking the "Add Contact" button
 
 	$scope.addProduct = function () {
@@ -17,14 +19,14 @@ myApp.controller('AppCtrl', ['$scope', '$http', function ($scope, $http) {
 		$http.post('/pricelist', $scope.product).success(function (response) {//'$scope.product' is the data I am sending to the server
 			console.log(response);
 			//call the refresh() function end of the addProduct() function to immediately refresh the page after I click the "Add Product" button
-			refresh(); 
-		}); 
+			refresh();
+		});
 	};
 
 	$scope.remove = function (id) {
 		console.log(id);
-		$http.delete('/pricelist/' + id).success(function (response) {//the idea of the function is send the URL of the 'id' I want to delete. 
-			
+		$http.delete('/pricelist/' + id).success(function (response) {//the idea of the function is send the URL of the 'id' I want to delete.
+
 			refresh();
 		});
 	};
@@ -41,14 +43,21 @@ myApp.controller('AppCtrl', ['$scope', '$http', function ($scope, $http) {
 		//Now I am going use a PUT request to send the data to the server to be updated
 		$http.put('/pricelist/' + $scope.product._id, $scope.product).success(function (response) {
 			refresh();
-		}); 
+		});
 		//('/pricelist/' + $scope.product._id) > thats the url of the product in the box
-		// ($scope.product) > then send to server everything in the input boxes (product.productname, product.price,product.size)  
+		// ($scope.product) > then send to server everything in the input boxes (product.productname, product.price,product.size)
 	};
 
 	$scope.deselect = function () {
 		$scope.product = '';
 	};
 
+	//sort by
+	$scope.sortBy = 'productname';
+     $scope.reserve = false // it will do ascending by default
+     $scope.doSort = function (propName) {
+     $scope.sortBy = propName;
+     $scope.reverse = !$scope.reverse;
+     };
 
 }]);

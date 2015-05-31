@@ -1,7 +1,7 @@
 var express = require('express');
-var app = express(); 
+var app = express();
 var mongojs = require('mongojs');
-var db = mongojs('pricelist', ['pricelist']) //which mangoDB database or collection I will be using 
+var db = mongojs('pricelist', ['pricelist']) //which mangoDB database or collection I will be using
 var bodyParser = require('body-parser');
 
 app.use(express.static(__dirname + '/public'));//my static files are in "public" folder
@@ -10,12 +10,12 @@ app.use(bodyParser.json());//Now the server is able to PARSE the data from the b
 app.get('/pricelist', function (req, res) {
 		console.log("Received a GET request ");
 		//lets have the server find the data from the 'pricelist' database
-		db.pricelist.find(function (err, docs) { //'docs' means it will respond with the pricelist document from the database 
+		db.pricelist.find(function (err, docs) { //'docs' means it will respond with the pricelist document from the database
 			console.log(docs); //to make sure I receive the data from database
 			res.json(docs); //sends the data back to the 'controller'
 		});
 
-	
+
 });
 app.post('/pricelist', function(req, res) {
 		console.log(req.body); //req.body -> what I received and parsed
@@ -39,20 +39,20 @@ app.get('/pricelist/:id', function (req, res) {
 	var id = req.params.id; //this basically get the value of the id from the URL
 	console.log(id);
 	db.pricelist.findOne({_id: mongojs.ObjectId(id)}, function (err, doc) {
-		res.json(doc); 
+		res.json(doc);
 	});
-});	
+});
 
 app.put('/pricelist/:id', function (req, res) {
 	var id = req.params.id; //this basically get the value of the id from the URL
 	console.log(req.body.productname); //for testing purpose, works fine
 	//now officially update and modify
-	db.pricelist.findAndModify({ query: {_id: mongojs.ObjectId(id)}, 
-		update : {$set: {productname : req.body.productname, price : req.body.price, size : req.body.size }},//this is the update I want to set for the product I selected 
+	db.pricelist.findAndModify({ query: {_id: mongojs.ObjectId(id)},
+		update : {$set: {productname : req.body.productname, price : req.body.price, size : req.body.size }},//this is the update I want to set for the product I selected
 		new : true}, function (err, doc) {
 			res.json(doc);
 			//let go to controller.js file and tell the browser to refresh the page
-		
+
 	});
 });
 
